@@ -30,7 +30,24 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       widget.audioPlayer.play();
       _isPlaying = true;
     } on Exception {
-      print("error playing audio.");
+      Dialog(
+        child: Center(
+          child: Column(
+            children: [
+              const Text("Error"),
+              const SizedBox(
+                height: 4.0,
+              ),
+              const Text("Please try again"),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/home');
+                  },
+                  child: const Text("OK"))
+            ],
+          ),
+        ),
+      );
     }
   }
 

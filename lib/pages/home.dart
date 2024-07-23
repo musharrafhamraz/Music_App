@@ -71,9 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, "/music");
-                      },
+                      onTap: () {},
                       child: Container(
                         width: 50,
                         height: 50,
@@ -146,7 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) => InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NowPlayingScreen(
+                                          songModel: _songs[index],
+                                          audioPlayer: _audioPlayer,
+                                        )));
+                          },
                           child: Container(
                             margin: const EdgeInsets.only(right: 16),
                             width: 150,
