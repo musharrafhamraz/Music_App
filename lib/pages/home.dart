@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:music/pages/musicscreen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   List<SongModel> _songs = [];
 
   @override
@@ -142,53 +145,56 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Expanded(
                         child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.only(right: 16),
-                          width: 150,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 150,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(0.0),
-                                  child: QueryArtworkWidget(
-                                    id: _songs[index].id,
-                                    type: ArtworkType.AUDIO,
-                                    nullArtworkWidget: const Icon(
-                                        Icons.music_note,
-                                        size: 50,
-                                        color: Colors.white),
-                                    artworkFit: BoxFit.cover,
+                        itemBuilder: (context, index) => InkWell(
+                          onTap: () {},
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 16),
+                            width: 150,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 150,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(0.0),
+                                    child: QueryArtworkWidget(
+                                      id: _songs[index].id,
+                                      type: ArtworkType.AUDIO,
+                                      nullArtworkWidget: const Icon(
+                                          Icons.music_note,
+                                          size: 50,
+                                          color: Colors.white),
+                                      artworkFit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _songs[index].title,
-                                maxLines: 1,
-                                style: GoogleFonts.nunito(
-                                  textStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                const SizedBox(height: 8),
+                                Text(
+                                  _songs[index].title,
+                                  maxLines: 1,
+                                  style: GoogleFonts.nunito(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                _songs[index].artist ?? 'Unknown Artist',
-                                maxLines: 1,
-                                style: GoogleFonts.nunito(
-                                  textStyle: const TextStyle(
-                                    color: Colors.white54,
+                                Text(
+                                  _songs[index].artist ?? 'Unknown Artist',
+                                  maxLines: 1,
+                                  style: GoogleFonts.nunito(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white54,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         itemCount: _songs.length,
@@ -252,7 +258,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             trailing: const Icon(Icons.more_vert,
                                 color: Colors.white),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NowPlayingScreen(
+                                            songModel: _songs[index],
+                                            audioPlayer: _audioPlayer,
+                                          )));
+                              // playSong(_songs[index].uri!);
+                            },
                           ),
                           itemCount: _songs.length,
                         ),

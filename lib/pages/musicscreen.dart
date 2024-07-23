@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
-class NowPlayingScreen extends StatelessWidget {
-  const NowPlayingScreen({super.key});
+class NowPlayingScreen extends StatefulWidget {
+  const NowPlayingScreen(
+      {super.key, required this.songModel, required this.audioPlayer});
+  final SongModel songModel;
+  final AudioPlayer audioPlayer;
+
+  @override
+  State<NowPlayingScreen> createState() => _NowPlayingScreenState();
+}
+
+class _NowPlayingScreenState extends State<NowPlayingScreen> {
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    playSong();
+  }
+
+  playSong() {
+    try {
+      widget.audioPlayer.setAudioSource(
+        AudioSource.uri(Uri.parse(widget.songModel.uri!)),
+      );
+      widget.audioPlayer.play();
+      _isPlaying = true;
+    } on Exception {
+      print("error playing audio.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +84,28 @@ class NowPlayingScreen extends StatelessWidget {
                 height: 300,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(50),
                 ),
                 child: Center(
-                  child: Text(
-                    'Image',
-                    style: GoogleFonts.nunito(
-                      textStyle: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 18,
+                  child: Container(
+                    width: 300,
+                    child: Container(
+                      height: 300,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(0.0),
+                        child: QueryArtworkWidget(
+                          id: widget.songModel.id,
+                          quality: 100,
+                          type: ArtworkType.AUDIO,
+                          nullArtworkWidget: const Icon(Icons.music_note,
+                              size: 50, color: Colors.white),
+                          artworkFit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -70,7 +113,8 @@ class NowPlayingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'Mungkin Nanti',
+                widget.songModel.displayNameWOExt,
+                maxLines: 2,
                 style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
                     color: Colors.white,
@@ -80,7 +124,10 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                'Zidan',
+                widget.songModel.artist.toString() == "<unknown>"
+                    ? "Unknown Artist"
+                    : widget.songModel.artist.toString(),
+                maxLines: 1,
                 style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
                     color: Colors.white54,
@@ -146,9 +193,22 @@ class NowPlayingScreen extends StatelessWidget {
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: const Icon(Icons.play_circle_fill,
-                        color: Colors.blueAccent, size: 70),
-                    onPressed: () {},
+                    icon: Icon(
+                        _isPlaying
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_filled,
+                        color: Colors.blueAccent,
+                        size: 70),
+                    onPressed: () {
+                      setState(() {
+                        if (_isPlaying) {
+                          widget.audioPlayer.pause();
+                        } else {
+                          widget.audioPlayer.play();
+                        }
+                        _isPlaying = !_isPlaying;
+                      });
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_next, color: Colors.white),

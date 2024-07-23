@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:music/pages/musicscreen.dart';
 import 'pages/splashscreen.dart';
 import 'pages/home.dart';
 
@@ -21,7 +20,6 @@ class MyApp extends StatelessWidget {
       home: const MusicScreen(),
       routes: {
         '/login': (context) => HomeScreen(),
-        '/music': (context) => NowPlayingScreen()
       },
     );
   }
