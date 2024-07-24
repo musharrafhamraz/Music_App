@@ -294,6 +294,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music/pages/camera.dart';
 import 'package:music/pages/musicscreen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../functions/find_genre.dart';
@@ -480,7 +481,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const CameraScreen()));
+                      },
                       child: Container(
                         width: 50,
                         height: 50,
@@ -489,7 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: const Icon(
-                          Icons.align_horizontal_center,
+                          Icons.camera_alt,
                           color: Colors.white,
                         ),
                       ),
