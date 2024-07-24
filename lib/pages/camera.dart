@@ -99,12 +99,12 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 Center(
                   child: Text(
-                    'Crop Doctor',
+                    'How are You Feeling.',
                     style: GoogleFonts.openSans(
                       textStyle: const TextStyle(
                         fontSize: 27,
                         fontWeight: FontWeight.bold,
-                        color: Colors.lightGreen,
+                        color: Color.fromRGBO(15, 9, 104, 1),
                       ),
                     ),
                   ),

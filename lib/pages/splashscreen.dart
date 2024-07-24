@@ -27,27 +27,32 @@ class MusicScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   // Placeholder for the main image
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(500),
-                        topRight: Radius.circular(500),
-                        bottomLeft: Radius.circular(50),
-                        bottomRight: Radius.circular(50),
+                  Positioned(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(500),
+                          topRight: Radius.circular(500),
+                          bottomLeft: Radius.circular(50),
+                          bottomRight: Radius.circular(50),
+                        ),
+                        border: Border.all(
+                          color: Colors.white38,
+                          width: 3,
+                        ),
+                        color: Colors.black.withOpacity(0.2),
                       ),
-                      border: Border.all(
-                        color: Colors.white38,
-                        width: 3,
-                      ),
-                      color: Colors.black.withOpacity(0.2),
                     ),
                   ),
 
-                  Image.asset(
-                    'assets/images/splashscreen.png',
-                    fit: BoxFit.cover,
+                  Positioned(
+                    bottom: 0,
+                    child: Image.asset(
+                      'assets/images/splashscreen.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                   // Music notes
                 ],
