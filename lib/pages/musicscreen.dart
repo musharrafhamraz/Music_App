@@ -14,6 +14,9 @@ class NowPlayingScreen extends StatefulWidget {
 }
 
 class _NowPlayingScreenState extends State<NowPlayingScreen> {
+  Duration _duration = const Duration();
+  Duration _position = const Duration();
+
   bool _isPlaying = false;
 
   @override
@@ -49,6 +52,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         ),
       );
     }
+    widget.audioPlayer.durationStream.listen((d) {
+      setState(() {
+        _duration = d!;
+      });
+    });
+
+    widget.audioPlayer.positionStream.listen((p) {
+      setState(() {
+        _position = p;
+      });
+    });
   }
 
   @override
@@ -104,7 +118,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: Center(
-                  child: Container(
+                  child: SizedBox(
                     width: 300,
                     child: Container(
                       height: 300,
@@ -168,19 +182,24 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
               ),
               Expanded(
                 child: Slider(
-                  value: 0.50,
-                  min: 0,
-                  max: 3.52,
-                  activeColor: Color.fromARGB(255, 255, 255, 255),
+                  value: _position.inSeconds.toDouble(),
+                  min: const Duration(microseconds: 0).inSeconds.toDouble(),
+                  max: _duration.inSeconds.toDouble(),
+                  activeColor: const Color.fromARGB(255, 255, 255, 255),
                   inactiveColor: Colors.white54,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      changeToSeconds(value.toInt());
+                      value = value;
+                    });
+                  },
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '1:50',
+                    _position.toString().split(".")[0],
                     style: GoogleFonts.nunito(
                       textStyle: const TextStyle(
                         color: Colors.white54,
@@ -188,7 +207,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     ),
                   ),
                   Text(
-                    '3:52',
+                    _duration.toString().split(".")[0],
                     style: GoogleFonts.nunito(
                       textStyle: const TextStyle(
                         color: Colors.white54,
@@ -255,5 +274,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         ),
       ),
     ));
+  }
+
+  void changeToSeconds(int seconds) {
+    Duration duration = Duration(seconds: seconds);
+    widget.audioPlayer.seek(duration);
   }
 }

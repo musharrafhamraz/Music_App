@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MusicScreen(),
       routes: {
-        '/home': (context) => HomeScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }
