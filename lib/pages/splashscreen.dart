@@ -23,34 +23,40 @@ class MusicScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Placeholder for the main image
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(500),
-                        topRight: Radius.circular(500),
-                        bottomLeft: Radius.circular(50),
-                        bottomRight: Radius.circular(50),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 2.6,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Placeholder for the main image
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(500),
+                          topRight: Radius.circular(500),
+                          bottomLeft: Radius.circular(50),
+                          bottomRight: Radius.circular(50),
+                        ),
+                        border: Border.all(
+                          color: Colors.white38,
+                          width: 3,
+                        ),
+                        color: Colors.black.withOpacity(0.2),
                       ),
-                      border: Border.all(
-                        color: Colors.white38,
-                        width: 3,
-                      ),
-                      color: Colors.black.withOpacity(0.2),
                     ),
-                  ),
 
-                  Image.asset(
-                    'assets/images/splashscreen.png',
-                    fit: BoxFit.cover,
-                  ),
-                  // Music notes
-                ],
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        'assets/images/splashscreen.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Music notes
+                  ],
+                ),
               ),
               const SizedBox(height: 40),
               Text('Listen and Enjoy\nYour Music',
