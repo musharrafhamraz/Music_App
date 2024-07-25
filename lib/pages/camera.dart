@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'recomend.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  const CameraScreen(
+      {super.key, required this.audioPlayer, required this.songs});
+  final AudioPlayer audioPlayer;
+  final List<SongModel> songs;
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -28,7 +34,7 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       _cameras = await availableCameras();
       if (_cameras != null && _cameras!.isNotEmpty) {
-        _controller = CameraController(_cameras![0], ResolutionPreset.high);
+        _controller = CameraController(_cameras![1], ResolutionPreset.high);
         await _controller?.initialize();
         setState(() {
           _isCameraInitialized = true;
@@ -78,7 +84,14 @@ class _CameraScreenState extends State<CameraScreen> {
             ? recognitions!.first['label']
             : 'No Prediction';
       });
-      print("The prediction is: $_prediction");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ReccomendationScreen(
+                    prediction: _prediction!,
+                    songs: widget.songs,
+                    audioPlayer: widget.audioPlayer,
+                  )));
     } catch (e) {
       print("Error classifying image: $e");
     }
@@ -120,7 +133,7 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 Center(
                   child: Text(
-                    'How are You Feeling.',
+                    'How are You Feeling',
                     style: GoogleFonts.openSans(
                       textStyle: const TextStyle(
                         fontSize: 27,
@@ -151,47 +164,15 @@ class _CameraScreenState extends State<CameraScreen> {
                 InkWell(
                   onTap: _captureAndClassify,
                   child: Container(
-                    height: 80.0,
-                    width: 80.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.black,
-                    ),
-                    child: const Icon(
-                      Icons.camera,
-                      color: Colors.white,
-                      size: 55.0,
-                    ),
-                  ),
+                      height: 80.0,
+                      width: 80.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      child: Image.asset("assets/images/think.png")),
                 ),
               ],
             ),
-            Positioned(
-              top: 13,
-              left: 13,
-              child: InkWell(
-                onTap: () => Navigator.pushNamed(context, '/home'),
-                child: Container(
-                  height: 65.0,
-                  width: 65.0,
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 34,
-                  ),
-                ),
-              ),
-            ),
-            if (_prediction != null)
-              Positioned(
-                top: 5,
-                left: 26,
-                child: Text("The prediction is: $_prediction"),
-              ),
           ],
         ),
       ),

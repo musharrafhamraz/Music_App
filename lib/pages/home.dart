@@ -483,7 +483,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const CameraScreen()));
+                            builder: (context) => CameraScreen(
+                                  songs: _songs,
+                                  audioPlayer: _audioPlayer,
+                                )));
                       },
                       child: Container(
                         width: 50,
