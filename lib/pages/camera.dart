@@ -14,6 +14,7 @@ class _CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   List<CameraDescription>? _cameras;
   bool _isCameraInitialized = false;
+  bool _isModelLoaded = false;
   String? _prediction;
 
   @override
@@ -41,19 +42,32 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void> _loadModel() async {
     try {
       String? res = await Tflite.loadModel(
-        model: "assets/models/converted_model.tflite",
-        labels: "assets/models/labels.txt",
+        model:
+            "assets/models/converted_model.tflite", // Ensure this path is correct
+        labels: "assets/models/labels.txt", // Ensure this path is correct
         numThreads: 1,
         isAsset: true,
         useGpuDelegate: false,
       );
-      print("Model loaded: $res");
+      if (res == "success") {
+        setState(() {
+          _isModelLoaded = true;
+        });
+        print("Model loaded successfully.");
+      } else {
+        print("Failed to load model.");
+      }
     } catch (e) {
       print("Error loading model: $e");
     }
   }
 
   Future<void> _classifyImage(String path) async {
+    if (!_isModelLoaded) {
+      print("Model is not loaded yet.");
+      return;
+    }
+
     try {
       var recognitions = await Tflite.runModelOnImage(
         path: path,
@@ -83,8 +97,15 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    // Dispose the camera controller if it's initialized
+    if (_controller != null) {
+      _controller!.dispose();
+      _controller = null;
+    }
+
+    // Close the interpreter
     Tflite.close();
+
     super.dispose();
   }
 

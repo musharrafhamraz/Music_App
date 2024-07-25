@@ -18,18 +18,19 @@ class MusicScreen extends StatelessWidget {
             Color.fromRGBO(37, 31, 159, 1),
           ],
         )),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 2.3,
+              width: double.infinity,
+              child: Stack(
                 alignment: Alignment.center,
                 children: [
                   // Placeholder for the main image
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    height: MediaQuery.of(context).size.height * 0.6,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(500),
@@ -45,25 +46,32 @@ class MusicScreen extends StatelessWidget {
                     ),
                   ),
 
-                  Image.asset(
-                    'assets/images/splashscreen.png',
-                    fit: BoxFit.cover,
+                  Positioned(
+                    bottom: 3,
+                    child: Image.asset(
+                      'assets/images/splashscreen.png',
+                      fit: BoxFit.cover,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                    ),
                   ),
                   // Music notes
                 ],
               ),
-              const SizedBox(height: 40),
-              Text('Listen and Enjoy\nYour Music',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.openSans(
-                    textStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-              const SizedBox(height: 16),
-              Text(
+            ),
+            const SizedBox(height: 40),
+            Text('Listen and Enjoy\nYour Music',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.openSans(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Text(
                 'listen to our music and feel the joy of the songs we provide',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -71,24 +79,24 @@ class MusicScreen extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 40),
-              CircleAvatar(
+            ),
+            const SizedBox(height: 40),
+            CircleAvatar(
+              radius: 48,
+              backgroundColor: Colors.blue[900],
+              child: CircleAvatar(
                 radius: 38,
-                backgroundColor: Colors.blue[900],
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.blueAccent,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios_rounded,
-                        color: Colors.black),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, "/home");
-                    },
-                  ),
+                backgroundColor: Colors.blueAccent,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios_rounded,
+                      color: Colors.black),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, "/home");
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
