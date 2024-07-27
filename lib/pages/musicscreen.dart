@@ -336,26 +336,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   Duration _position = const Duration();
 
   bool _isPlaying = false;
+  bool _isShuffling = false;
+  bool _isRepeating = false;
   int _currentSongIndex = 0;
+  List<SongModel> _shuffledSongs = [];
 
   @override
   void initState() {
     super.initState();
     _currentSongIndex = widget.currentSongIndex;
+    _shuffledSongs = List.from(widget.songs);
     playSong();
   }
 
   playSong() async {
     try {
       await widget.audioPlayer.setAudioSource(
-        AudioSource.uri(Uri.parse(widget.songs[_currentSongIndex].uri!)),
+        AudioSource.uri(Uri.parse(_shuffledSongs[_currentSongIndex].uri!)),
       );
       widget.audioPlayer.play();
       setState(() {
         _isPlaying = true;
       });
     } on Exception {
-      _showErrorDialog();
+      // _showErrorDialog();
     }
 
     widget.audioPlayer.durationStream.listen((d) {
@@ -368,6 +372,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       setState(() {
         _position = p;
       });
+    });
+
+    widget.audioPlayer.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        if (_isRepeating) {
+          widget.audioPlayer.seek(Duration.zero);
+        } else {
+          _playNextSong();
+        }
+      }
     });
   }
 
@@ -396,7 +410,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   void _playNextSong() {
     setState(() {
-      if (_currentSongIndex < widget.songs.length - 1) {
+      if (_currentSongIndex < _shuffledSongs.length - 1) {
         _currentSongIndex++;
       } else {
         _currentSongIndex = 0;
@@ -410,9 +424,36 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       if (_currentSongIndex > 0) {
         _currentSongIndex--;
       } else {
-        _currentSongIndex = widget.songs.length - 1;
+        _currentSongIndex = _shuffledSongs.length - 1;
       }
       playSong();
+    });
+  }
+
+  void _shufflePlaylist() {
+    setState(() {
+      _isShuffling = !_isShuffling;
+      if (_isShuffling) {
+        // Shuffle the songs and save the current song index to ensure the current song doesn't change.
+        int currentSongId = _shuffledSongs[_currentSongIndex].id;
+        _shuffledSongs.shuffle();
+
+        // Find the new index of the current song after shuffling.
+        _currentSongIndex =
+            _shuffledSongs.indexWhere((song) => song.id == currentSongId);
+      } else {
+        // Restore the original song order and update the current song index.
+        _shuffledSongs = List.from(widget.songs);
+        int currentSongId = widget.songs[_currentSongIndex].id;
+        _currentSongIndex =
+            _shuffledSongs.indexWhere((song) => song.id == currentSongId);
+      }
+    });
+  }
+
+  void _repeatSong() {
+    setState(() {
+      _isRepeating = !_isRepeating;
     });
   }
 
@@ -482,7 +523,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(0.0),
                           child: QueryArtworkWidget(
-                            id: widget.songs[_currentSongIndex].id,
+                            id: _shuffledSongs[_currentSongIndex].id,
                             quality: 100,
                             type: ArtworkType.AUDIO,
                             nullArtworkWidget: const Icon(Icons.music_note,
@@ -496,7 +537,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  widget.songs[_currentSongIndex].displayNameWOExt,
+                  _shuffledSongs[_currentSongIndex].displayNameWOExt,
                   maxLines: 2,
                   style: GoogleFonts.nunito(
                     textStyle: const TextStyle(
@@ -507,10 +548,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                   ),
                 ),
                 Text(
-                  widget.songs[_currentSongIndex].artist.toString() ==
+                  _shuffledSongs[_currentSongIndex].artist.toString() ==
                           "<unknown>"
                       ? "Unknown Artist"
-                      : widget.songs[_currentSongIndex].artist.toString(),
+                      : _shuffledSongs[_currentSongIndex].artist.toString(),
                   maxLines: 1,
                   style: GoogleFonts.nunito(
                     textStyle: const TextStyle(
@@ -574,8 +615,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.shuffle, color: Colors.white),
-                      onPressed: () {},
+                      icon: Icon(Icons.shuffle,
+                          color:
+                              _isShuffling ? Colors.blueAccent : Colors.white),
+                      onPressed: _shufflePlaylist,
                     ),
                     IconButton(
                       icon:
@@ -605,8 +648,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       onPressed: _playNextSong,
                     ),
                     IconButton(
-                      icon: const Icon(Icons.repeat, color: Colors.white),
-                      onPressed: () {},
+                      icon: Icon(Icons.repeat,
+                          color:
+                              _isRepeating ? Colors.blueAccent : Colors.white),
+                      onPressed: _repeatSong,
                     ),
                   ],
                 ),
