@@ -1,36 +1,3 @@
-// import 'package:flutter/material.dart';
-// import '../functions/image_display.dart';
-
-// class ReccomendationScreen extends StatefulWidget {
-//   const ReccomendationScreen({super.key, required this.prediction});
-//   final String prediction;
-
-//   @override
-//   State<ReccomendationScreen> createState() => _ReccomendationScreenState();
-// }
-
-// class _ReccomendationScreenState extends State<ReccomendationScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     String imagePath = getImagePath(widget.prediction);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.prediction),
-//       ),
-//       body: SafeArea(
-//         child: Center(
-//           child: Image.asset(
-//             imagePath,
-//             fit: BoxFit.cover,
-//             height: 300,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -63,27 +30,39 @@ class _ReccomendationScreenState extends State<ReccomendationScreen> {
   }
 
   SongModel? _getRecommendedSong(String emotion) {
-    // Define a mapping of emotions to music genres
     Map<String, List<String>> emotionToGenre = {
-      'happy': ['Pop', 'Dance', 'Electronic'],
-      'sad': ['Ballad', 'Blues', 'Soul'],
-      'angry': ['Rock', 'Metal', 'Punk'],
-      'neutral': ['Indie', 'Jazz', 'Alternative'],
-      // Add more mappings as needed
+      'happy': ['Pop', 'Dance', 'Electronic', 'Romantic', 'Folk', 'Hip Hop'],
+      'sad': [
+        'Ballad',
+        'Blues',
+        'Soul',
+        'Romantic',
+      ],
+      'angry': [],
+      'neutral': [
+        'Indie',
+        'Jazz',
+        'Alternative',
+        'Classical',
+        'Electronic',
+      ],
+      'disgust': ['R&B'],
+      'fearful': [],
+      'surprised': [
+        'Pop',
+        'Dance',
+        'Electronic',
+      ],
     };
 
-    // Get the genre list based on emotion
     List<String>? genres = emotionToGenre[emotion.toLowerCase()];
 
-    // Filter songs that match the genres
     List<SongModel> filteredSongs = widget.songs.where((song) {
-      // Assume that the genre is stored in song's album or artist metadata
       String songMetadata = '${song.album} ${song.artist}'.toLowerCase();
       return genres != null &&
           genres.any((genre) => songMetadata.contains(genre.toLowerCase()));
     }).toList();
 
-    // Return the first match or a default song if none found
     return filteredSongs.isNotEmpty ? filteredSongs.first : null;
   }
 
