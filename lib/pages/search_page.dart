@@ -134,7 +134,8 @@ class _SearchPageState extends State<SearchPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NowPlayingScreen(
-                                  songModel: _filteredSongs[index],
+                                  currentSongIndex: index,
+                                  songs: _filteredSongs,
                                   audioPlayer: _audioPlayer,
                                 ),
                               ),

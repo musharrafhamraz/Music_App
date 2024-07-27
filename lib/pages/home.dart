@@ -721,7 +721,8 @@ class _MyMusicAppState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => NowPlayingScreen(
-                                            songModel: _filteredSongs[index],
+                                            currentSongIndex: index,
+                                            songs: _filteredSongs,
                                             audioPlayer: _audioPlayer,
                                           )));
                             },
@@ -851,7 +852,8 @@ class _MyMusicAppState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => NowPlayingScreen(
-                                            songModel: _filteredSongs[index],
+                                            currentSongIndex: index,
+                                            songs: _filteredSongs,
                                             audioPlayer: _audioPlayer,
                                           )));
                             },
