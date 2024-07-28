@@ -90,7 +90,6 @@ class _CameraScreenState extends State<CameraScreen> {
               builder: (context) => ReccomendationScreen(
                     prediction: _prediction!,
                     songs: widget.songs,
-                    audioPlayer: widget.audioPlayer,
                   )));
     } catch (e) {
       print("Error classifying image: $e");

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music/pages/musicscreen.dart';
+import 'package:music/provider/audio_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, required this.songs});
@@ -130,6 +132,8 @@ class _SearchPageState extends State<SearchPage> {
                           trailing:
                               const Icon(Icons.more_vert, color: Colors.white),
                           onTap: () {
+                            Provider.of<AudioProvider>(context, listen: false)
+                                .stop();
                             Navigator.push(
                               context,
                               MaterialPageRoute(

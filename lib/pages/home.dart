@@ -430,7 +430,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music/pages/camera.dart';
 import 'package:music/pages/musicscreen.dart';
+import 'package:music/provider/audio_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 import '../functions/find_genre.dart';
 import 'search_page.dart';
 
@@ -717,6 +719,8 @@ class _MyMusicAppState extends State<HomeScreen> {
                           itemCount: _filteredSongs.length,
                           itemBuilder: (context, index) => InkWell(
                             onTap: () {
+                              Provider.of<AudioProvider>(context, listen: false)
+                                  .stop();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -848,6 +852,8 @@ class _MyMusicAppState extends State<HomeScreen> {
                             trailing: const Icon(Icons.more_vert,
                                 color: Colors.white),
                             onTap: () {
+                              Provider.of<AudioProvider>(context, listen: false)
+                                  .stop();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
