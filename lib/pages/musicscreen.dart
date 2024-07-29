@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music/provider/song_image_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class NowPlayingScreen extends StatefulWidget {
   const NowPlayingScreen({
@@ -35,42 +37,49 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     _currentSongIndex = widget.currentSongIndex;
     _shuffledSongs = List.from(widget.songs);
     playSong();
-  }
 
-  playSong() async {
-    try {
-      await widget.audioPlayer.setAudioSource(
-        AudioSource.uri(Uri.parse(_shuffledSongs[_currentSongIndex].uri!)),
-      );
-      widget.audioPlayer.play();
+    // Listen to the player state to update play/pause status
+    widget.audioPlayer.playerStateStream.listen((state) {
       setState(() {
-        _isPlaying = true;
-      });
-    } on Exception {
-      // _showErrorDialog();
-    }
-
-    widget.audioPlayer.durationStream.listen((d) {
-      setState(() {
-        _duration = d!;
+        _isPlaying = state.playing;
       });
     });
 
+    // Listen for changes in the song duration
+    widget.audioPlayer.durationStream.listen((d) {
+      setState(() {
+        _duration = d ?? const Duration();
+      });
+    });
+
+    // Listen for changes in the song position
     widget.audioPlayer.positionStream.listen((p) {
       setState(() {
         _position = p;
       });
     });
+  }
 
-    widget.audioPlayer.playerStateStream.listen((state) {
-      if (state.processingState == ProcessingState.completed) {
-        if (_isRepeating) {
-          widget.audioPlayer.seek(Duration.zero);
-        } else {
-          _playNextSong();
-        }
-      }
-    });
+  @override
+  void dispose() {
+    widget.audioPlayer.stop(); // Stop the audio player when leaving the screen
+    super.dispose();
+  }
+
+  Future<void> playSong() async {
+    // Access the provider to update the image ID
+    var songImageProvider =
+        Provider.of<SongImageProvider>(context, listen: false);
+    songImageProvider.setId(_shuffledSongs[_currentSongIndex].id);
+
+    try {
+      await widget.audioPlayer.setAudioSource(
+        AudioSource.uri(Uri.parse(_shuffledSongs[_currentSongIndex].uri!)),
+      );
+      widget.audioPlayer.play();
+    } on Exception {
+      _showErrorDialog();
+    }
   }
 
   void _showErrorDialog() {
@@ -210,13 +219,19 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(0.0),
-                          child: QueryArtworkWidget(
-                            id: _shuffledSongs[_currentSongIndex].id,
-                            quality: 100,
-                            type: ArtworkType.AUDIO,
-                            nullArtworkWidget: const Icon(Icons.music_note,
-                                size: 50, color: Colors.white),
-                            artworkFit: BoxFit.cover,
+                          child: Consumer<SongImageProvider>(
+                            builder: (context, songImageProvider, child) {
+                              return QueryArtworkWidget(
+                                id: songImageProvider
+                                    .id, // Use the ID from the provider
+                                type: ArtworkType.AUDIO,
+                                nullArtworkWidget:
+                                    const Icon(Icons.music_note, size: 100),
+                                artworkFit: BoxFit.cover,
+                                artworkHeight: 200,
+                                artworkWidth: 200,
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -277,28 +292,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                     },
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _position.toString().split(".")[0],
-                      style: GoogleFonts.nunito(
-                        textStyle: const TextStyle(
-                          color: Colors.white54,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _position.toString().split(".")[0],
+                        style: GoogleFonts.nunito(
+                          textStyle: const TextStyle(
+                            color: Colors.white54,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      _duration.toString().split(".")[0],
-                      style: GoogleFonts.nunito(
-                        textStyle: const TextStyle(
-                          color: Colors.white54,
+                      Text(
+                        _duration.toString().split(".")[0],
+                        style: GoogleFonts.nunito(
+                          textStyle: const TextStyle(
+                            color: Colors.white54,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -347,7 +364,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 TextButton(
                   onPressed: () {},
                   child: Text(
-                    'Songs',
+                    ' ',
                     style: GoogleFonts.nunito(
                       textStyle: const TextStyle(
                         color: Colors.white,

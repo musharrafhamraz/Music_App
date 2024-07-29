@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:music/provider/audio_provider.dart';
+import 'package:music/provider/song_image_provider.dart';
 import 'pages/splashscreen.dart';
 import 'pages/home.dart';
 
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-      ChangeNotifierProvider(create: (_) => AudioProvider(), child: MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (_) => AudioProvider(),
+    ),
+    ChangeNotifierProvider(create: (_) => SongImageProvider()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
