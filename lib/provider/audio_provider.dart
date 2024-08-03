@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class AudioProvider extends ChangeNotifier {
@@ -9,7 +10,15 @@ class AudioProvider extends ChangeNotifier {
 
   Future<void> playSong(SongModel song) async {
     try {
-      await audioPlayer.setAudioSource(AudioSource.uri(Uri.file(song.data)));
+      await audioPlayer.setAudioSource(AudioSource.uri(
+        Uri.file(song.data),
+        tag: MediaItem(
+          id: song.id.toString(),
+          album: song.album ?? 'Unknown Album',
+          title: song.displayNameWOExt,
+          artUri: Uri.parse(song.id.toString()),
+        ),
+      ));
       await audioPlayer.play();
       currentSong = song;
       isPlaying = true;
@@ -23,9 +32,11 @@ class AudioProvider extends ChangeNotifier {
     if (audioPlayer.playing) {
       await audioPlayer.pause();
       isPlaying = false;
+      notifyListeners();
     } else {
       await audioPlayer.play();
       isPlaying = true;
+      notifyListeners();
     }
     notifyListeners();
   }

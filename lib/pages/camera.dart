@@ -26,6 +26,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
+    widget.audioPlayer.stop();
     _initializeCamera();
     _loadModel();
   }

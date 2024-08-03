@@ -25,7 +25,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         ChangeNotifierProvider(create: (_) => SongImageProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

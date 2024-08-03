@@ -143,17 +143,29 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          InkWell(
-                            onTap: () {
+                          // InkWell(
+                          //   onTap: () {
+                          //     audioProvider.togglePlayPause();
+                          //   },
+                          //   child: Icon(
+                          //     size: 70,
+                          //     color: Colors.blueAccent,
+                          //     audioProvider.isPlaying
+                          //         ? Icons.pause_circle_filled
+                          //         : Icons.play_circle_filled,
+                          //   ),
+                          // ),
+                          IconButton(
+                            icon: Icon(
+                              audioProvider.isPlaying
+                                  ? Icons.pause_circle_filled
+                                  : Icons.play_circle_filled,
+                              color: Colors.blueAccent,
+                              size: 70,
+                            ),
+                            onPressed: () {
                               audioProvider.togglePlayPause();
                             },
-                            child: Icon(
-                              size: 35,
-                              color: Colors.white,
-                              audioProvider.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                            ),
                           ),
                         ],
                       )
