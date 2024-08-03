@@ -37,6 +37,7 @@ dependencies:
   on_audio_query: ^2.9.0
   permission_handler: ^11.3.1
   just_audio: ^0.9.39
+  just_audio_background: ^0.0.1-beta.13
 
 
   # The following adds the Cupertino Icons font to your application.

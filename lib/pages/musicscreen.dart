@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music/provider/song_image_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
     try {
       await widget.audioPlayer.setAudioSource(
-        AudioSource.uri(Uri.parse(_shuffledSongs[_currentSongIndex].uri!)),
+        AudioSource.uri(
+          Uri.parse(_shuffledSongs[_currentSongIndex].uri!),
+          tag: MediaItem(
+            // Specify a unique ID for each media item:
+            id: '${_shuffledSongs[_currentSongIndex].id}',
+            // Metadata to display in the notification:
+            album: "${_shuffledSongs[_currentSongIndex].album}",
+            title: _shuffledSongs[_currentSongIndex].displayNameWOExt,
+            artUri: Uri.parse('https://example.com/albumart.jpg'),
+          ),
+        ),
       );
       widget.audioPlayer.play();
     } on Exception {

@@ -6,13 +6,28 @@ import 'pages/home.dart';
 
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (_) => AudioProvider(),
+import 'package:just_audio_background/just_audio_background.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the JustAudioBackground
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+
+  // Run the app with MultiProvider
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AudioProvider()),
+        ChangeNotifierProvider(create: (_) => SongImageProvider()),
+      ],
+      child: MyApp(),
     ),
-    ChangeNotifierProvider(create: (_) => SongImageProvider()),
-  ], child: MyApp()));
+  );
 }
 
 class MyApp extends StatelessWidget {
