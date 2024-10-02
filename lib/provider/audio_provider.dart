@@ -32,11 +32,9 @@ class AudioProvider extends ChangeNotifier {
     if (audioPlayer.playing) {
       await audioPlayer.pause();
       isPlaying = false;
-      notifyListeners();
     } else {
       await audioPlayer.play();
       isPlaying = true;
-      notifyListeners();
     }
     notifyListeners();
   }

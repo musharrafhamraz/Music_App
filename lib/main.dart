@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/provider/audio_provider.dart';
-import 'package:music/provider/song_image_provider.dart';
+import 'package:music/provider/image_provider.dart';
 import 'pages/splashscreen.dart';
 import 'pages/home.dart';
 

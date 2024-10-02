@@ -112,6 +112,7 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                           QueryArtworkWidget(
                             id: recommendedSong!.id,
                             type: ArtworkType.AUDIO,
+                            quality: 100,
                             nullArtworkWidget:
                                 const Icon(Icons.music_note, size: 100),
                             artworkFit: BoxFit.cover,
@@ -143,18 +144,6 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          // InkWell(
-                          //   onTap: () {
-                          //     audioProvider.togglePlayPause();
-                          //   },
-                          //   child: Icon(
-                          //     size: 70,
-                          //     color: Colors.blueAccent,
-                          //     audioProvider.isPlaying
-                          //         ? Icons.pause_circle_filled
-                          //         : Icons.play_circle_filled,
-                          //   ),
-                          // ),
                           IconButton(
                             icon: Icon(
                               audioProvider.isPlaying
